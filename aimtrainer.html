@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css">
+            <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.slim.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+            <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+            <script src="/docs/5.2/assets/js/docs.min.js"></script>
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+			<link href="https://fonts.googleapis.com/css2?family=Montserrat&family=Quicksand:wght@600&display=swap" rel="stylesheet">
+	<title>Aim Trainer Game</title>
+	<style>
+		body {
+			margin: 20px;
+			padding: 0;
+			background-image: url(animus.png);
+			color: white;
+			font-family: 'Montserrat', sans-serif;
+		}
+		#game-container {
+			margin: auto;
+			padding: 5px;
+			padding-top: 50px;
+			width: 600px;
+			height: 500px;
+			background-color: #000000;
+			border-radius: 10px;
+			position: relative;
+		}
+		#scoreboard {
+			position: absolute;
+			top: 10px;
+			left: 10px;
+			font-size: 24px;
+			font-weight: bold;
+			color: white;
+		}
+		#timer {
+			position: absolute;
+			top: 10px;
+			right: 10px;
+			font-size: 24px;
+			font-weight: bold;
+			color: white;
+		}
+		#yarn {
+			position: absolute;
+			top: 50px;
+			left: 10px;
+		}
+		#yass {
+			position: absolute;
+			top: 50px;
+			right: 10px;
+		}
+		.target {
+			position: absolute;
+			width: 50px;
+			height: 50px;
+			background-color: rgb(255, 255, 255);
+			border-radius: 50%;
+			cursor: pointer;
+		}
+		.target:hover {
+			transition: 100ms;
+			box-shadow:
+            0 0 7px #fff,
+            0 0 10px rgb(97, 192, 255),
+            0 0 21px rgb(0, 173, 253),
+            0 0 42px rgb(0, 153, 255),
+            0 0 62px rgb(0, 153, 255),
+            0 0 82px rgb(0, 153, 255),
+            0 0 92px rgb(0, 153, 255),
+            0 0 102px rgb(0, 153, 255);
+		}
+		.divContainer {
+			margin: auto;
+			margin-top: 0px;
+			margin-bottom: 0px;
+			text-align: center;
+		}
+        ul {
+            list-style-type: none;
+            margin: 20px;
+            padding: 10px;
+            overflow: hidden;
+            text-align: left;
+			display: inline-block;
+        }
+        li{
+            margin: 0px;
+            font-size: 20pt;
+            padding: 10px;
+			float: left;
+        }
+        li a {
+            text-align: left;
+            padding: 11px 13px;
+            text-decoration: none;
+            color: white;
+            transition: 100ms;
+        }
+        li a:hover {
+            color: white;
+            transition: 100ms;
+            text-decoration: none;
+            padding: 14px 17px;
+        }
+		h1{
+            font-size: 40pt;
+            font-family: 'Orbitron', sans-serif;
+            margin: auto;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+            .hover-underline-animation {
+            display: inline-block;
+            position: relative;
+            
+            }
+
+            .hover-underline-animation::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            transform: scaleX(0);
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: #0087ca;
+            transform-origin: bottom right;
+            transition: transform 0.25s ease-out;
+            }
+
+            .hover-underline-animation:hover::after {
+            transform: scaleX(1);
+            transform-origin: bottom left;
+            }
+	</style>
+</head>
+<body>
+	<div class="container-fluid">
+		<div class="row">
+			<div>
+				<h1>HIT THE CIRCLES!</h1>
+			</div>
+			<div class="divContainer">
+				<ul>
+					<li><a class="hover-underline-animation" href="index.html">QUIT GAME</a></li>
+					<li><a class="hover-underline-animation" href="instructions_game.html">INSTRUCTIONS</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div id="game-container">
+		<div id="scoreboard">Score: 0</div>
+		<div id="timer">Time: 0</div>
+		<button id="yarn" onclick="startGame()" >Start</button>
+		<button id="yass" onclick="endGame()" disabled>End Game</button>
+	</div>
+	<br>
+	<script>
+		var score = 0;
+		var timer = 0;
+		var maxTime = 30;
+		var timerInterval;
+
+		function startGame() {
+            document.getElementById("yarn").disabled = true;
+            document.getElementById("yass").disabled = false;
+			timerInterval = setInterval(updateTimer, 1000);
+			spawnTarget();
+		}
+		
+		function spawnTarget() {
+			var x = Math.floor(Math.random() * 500) + 50;
+			var y = Math.floor(Math.random() * 400) + 50;
+			var target = document.createElement("div");
+			target.classList.add("target");
+			target.style.top = y + "px";
+			target.style.left = x + "px";
+			target.addEventListener("click", hitTarget);
+			document.getElementById("game-container").appendChild(target);
+		}
+		
+		function hitTarget(event) {
+			score++;
+			document.getElementById("scoreboard").innerHTML = "Score: " + score;
+			event.target.remove();
+			spawnTarget();
+		}
+		
+		function updateTimer() {
+			timer++;
+			document.getElementById("timer").innerHTML = "Time: " + timer;
+			if (timer >= maxTime) {
+				endGame();
+			}
+		}
+		
+		function endGame() {
+			clearInterval(timerInterval);
+			if (score<30){
+			alert("Game Over, You Lost! Your score is " + score);
+			location.reload();
+            }
+			if (score>=30){
+			alert("Congratulations, You Won! Your score is " + score);
+			location.reload();
+            }
+            document.getElementById("yarn").disabled = false;
+		}
+		
+	</script>
+</body>
+</html>
